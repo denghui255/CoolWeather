@@ -2,8 +2,12 @@ package com.coolweather.app.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -54,6 +58,13 @@ public class ChooseAreaActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (sharedPreferences.getBoolean("city_selected",false)){
+            Intent intent = new Intent(this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         lv_view = (ListView) findViewById(R.id.id_lv_view);
         tv_title = (TextView) findViewById(R.id.id_tv_title);
 
@@ -70,6 +81,12 @@ public class ChooseAreaActivity extends Activity {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if (currentLevel == LEVEL_COUNTY){
+                    String countyCode = countyList.get(position).getCountyCode();
+                    Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+                    intent.putExtra("county_code",countyCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -91,7 +108,7 @@ public class ChooseAreaActivity extends Activity {
             tv_title.setText("中国");
             currentLevel = LEVEL_PROVINCE;
         }else {
-            queryFromService(null, "province");
+            queryFromServer(null, "province");
         }
     }
 
@@ -100,6 +117,8 @@ public class ChooseAreaActivity extends Activity {
      */
     private void queryCities() {
         cityList = coolWeatherDB.loadCity(selectedProvince.getId());
+        Log.d("CDB", "loadCity: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        Log.d("CDB", "loadCity: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         if (cityList.size() > 0 ){
             dataList.clear();
             for(City c : cityList){
@@ -110,7 +129,7 @@ public class ChooseAreaActivity extends Activity {
             tv_title.setText(selectedProvince.getProvinceName());
             currentLevel = LEVEL_CITY;
         }else {
-            queryFromService(selectedProvince.getProvinceCode(),"city");
+            queryFromServer(selectedProvince.getProvinceCode(), "city");
         }
     }
 
@@ -129,7 +148,7 @@ public class ChooseAreaActivity extends Activity {
             tv_title.setText(selectedCity.getCityName());
             currentLevel = LEVEL_COUNTY;
         }else {
-            queryFromService(selectedCity.getCityCode(),"county");
+            queryFromServer(selectedCity.getCityCode(), "county");
         }
     }
 
@@ -138,7 +157,7 @@ public class ChooseAreaActivity extends Activity {
      * @param code 省市县的代号
      * @param type 查询类型
      */
-    private void queryFromService(final String code, final String type) {
+    public void queryFromServer(final String code, final String type) {
         String address;
         if (!TextUtils.isEmpty(code)){
             address = "http://www.weather.com.cn/data/list3/city" + code + ".xml";

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.coolweather.app.model.City;
 import com.coolweather.app.model.County;
@@ -36,6 +37,7 @@ public class CoolWeatherDB {
     private CoolWeatherDB(Context context){
         CoolWeatherOpenHelper dbHelper = new CoolWeatherOpenHelper(context,DB_NAME,null,DB_VERSION);
         db = dbHelper.getWritableDatabase();
+//        db.delete("Province",null, null);
     }
 
     /**
@@ -97,6 +99,7 @@ public class CoolWeatherDB {
     public List<City> loadCity(int provinceId){
         List<City> list = new ArrayList<City>();
         Cursor cursor = db.query("City",null,"province_id = ？",new String[]{String.valueOf(provinceId)},null,null,null);
+//        Cursor cursor = db.query("City",null,null,null,null,null,null);
         if (cursor.moveToFirst()){
             do{
                 City city = new City();
@@ -129,17 +132,17 @@ public class CoolWeatherDB {
     public List<County> loadCounty(int cityId){
         List<County> list = new ArrayList<County>();
         Cursor cursor = db.query("County",null,"city_id = ？",new String[]{String.valueOf(cityId)},null,null,null);
+//        Cursor cursor = db.query("County",null,null,null,null,null,null);
         if (cursor.moveToFirst()){
             do{
                 County county = new County();
                 county.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
-                county.setCountyCode(cursor.getString(cursor.getColumnIndex("ciounty_code")));
+                county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
                 county.setCityId(cityId);
                 list.add(county);
             }while (cursor.moveToNext());
         }
         return list;
     }
-
 }

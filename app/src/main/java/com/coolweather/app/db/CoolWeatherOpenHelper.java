@@ -43,7 +43,6 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper{
         db.execSQL(CREATE_PROVINCE);    //创建Province表
         db.execSQL(CREATE_CITY);    //创建City表
         db.execSQL(CREATE_COUNTY);  //创建County表
-        Log.d("CoolWeatherOpenHelper","created");
     }
 
     @Override
