@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.coolweather.app.R;
+import com.coolweather.app.service.AutoUpdateService;
 import com.coolweather.app.util.HttpCallbackListener;
 import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
@@ -164,5 +165,9 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             tv_currentData.setText(prefs.getString("current_date", ""));
             ll_weatherInfo.setVisibility(View.VISIBLE);
             tv_cityName.setVisibility(View.VISIBLE);
+
+            //实现选择一个城市之后8小时进行自动更新天气信息
+            Intent intent = new Intent(this, AutoUpdateService.class);
+            startActivity(intent);
         }
 }

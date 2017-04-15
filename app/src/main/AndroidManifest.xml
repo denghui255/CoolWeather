@@ -18,5 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.WeatherActivity"/>
+        <service android:name=".service.AutoUpdateService"/>
+        <receiver android:name=".recevier.AutoUpdateRecevier"/>
     </application>
 </manifest>
