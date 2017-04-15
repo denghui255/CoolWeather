@@ -55,7 +55,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         String countyCode = getIntent().getStringExtra("county_code");
         if ( !TextUtils.isEmpty(countyCode)){
             //有县级代号时，去查询天气
-            tv_publish.setText("Sync...");
+            tv_publish.setText("Syncing...");
             ll_weatherInfo.setVisibility(View.INVISIBLE);
             tv_cityName.setVisibility(View.INVISIBLE);
             queryWeatherCode(countyCode);

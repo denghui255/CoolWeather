@@ -53,13 +53,17 @@ public class ChooseAreaActivity extends Activity {
 
     private int currentLevel;   //当前选中级别
 
+    private boolean isFromWeatherActivity;  //是否从weatherActivity中跳转过来
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
+        isFromWeatherActivity = getIntent().getBooleanExtra("From_Weather_Activity",false);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sharedPreferences.getBoolean("city_selected",false)){
+        // 已经选择了城市且不是从WeatherActivity跳转过来，才会直接跳转到 WeatherActivity
+        if (sharedPreferences.getBoolean("city_selected",false) && isFromWeatherActivity){
             Intent intent = new Intent(this,WeatherActivity.class);
             startActivity(intent);
             finish();
@@ -164,6 +168,14 @@ public class ChooseAreaActivity extends Activity {
         }else {
             address = "http://www.weather.com.cn/data/list3/city.xml";
         }
+//        /**
+//         * 心知天气API
+//         */
+//        if (!TextUtils.isEmpty(code)){
+//            address = "http://apis.baidu.com/thinkpage/weather_api/suggestion" +  "？location=daqing&language=zh-Hans&unit=c&start=0&days=3";
+//        }else {
+//            address = "http://www.weather.com.cn/data/list3/city.xml";
+//        }
         showProgressDialog();
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
@@ -240,6 +252,10 @@ public class ChooseAreaActivity extends Activity {
         }else if (currentLevel == LEVEL_CITY){
             queryProvinces();
         }else {
+            if (isFromWeatherActivity){
+                Intent intent = new Intent(this,WeatherActivity.class);
+                startActivity(intent);
+            }
             finish();
         }
     }

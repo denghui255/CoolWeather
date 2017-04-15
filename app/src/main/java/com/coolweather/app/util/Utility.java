@@ -12,6 +12,7 @@ import com.coolweather.app.model.City;
 import com.coolweather.app.model.County;
 import com.coolweather.app.model.Province;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -116,6 +117,19 @@ public class Utility {
             String temp2 = weatherIndo.getString("temp2");
             String weatherDesp = weatherIndo.getString("weather");
             String publishTime = weatherIndo.getString("ptime");
+//            /**
+//             * 心知天气
+//             */
+//            JSONArray object1 = (JSONArray) jsonObject.get("result");
+//            JSONObject object2 = (JSONObject) object1.get(0);
+//            JSONObject object3 = (JSONObject) object2.get("location");
+//            String weatherCode = object3.getString("id");
+//            String cityName = object3.getString("name");
+//            JSONObject object4 = (JSONObject) object2.get("daily");
+//            String temp1 = object3.getString("low");
+//            String temp2 = object3.getString("high");
+//            String publishTime = object3.getString("date");
+//            String weatherDesp = "晴";
             saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime);
         } catch (JSONException e) {
             e.printStackTrace();
